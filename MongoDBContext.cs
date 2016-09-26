@@ -12,27 +12,37 @@ namespace Mongo.Repository {
       Name = name;
     }
   }
+
+  public class MongoClientConnection {
+    public string ConnectionString { get; set; }
+    public string Database { get; set; }
+    public IMongoClient Client { get; set; }
+  }
+
   public class MongoDBContext : IDisposable {
-    private static List<IMongoClient> Clients = new List<IMongoClient>();
-    private static List<string> Contexts = new List<string>();
-    private static List<string> Databases = new List<string>();
+    private static List<MongoClientConnection> ClientsConnections = new List<MongoClientConnection>();
 
-    public MongoDBContext(string Name) {
-      if (!Contexts.Contains(Name)) {
-        var cn = ConfigurationManager.ConnectionStrings[Name].ConnectionString;
-        var url = new MongoUrl(cn);
+    public MongoDBContext(string ConnectionString) {
+      MongoUrl url = null;
 
-        Contexts.Add(Name);
-        Clients.Add(new MongoClient(cn));
-        Databases.Add(url.DatabaseName);
+      if (ConnectionString.Trim().IndexOf("name=", StringComparison.InvariantCultureIgnoreCase) == 0) {
+        ConnectionString = ConfigurationManager.ConnectionStrings[ConnectionString.Substring(5).Trim()].ConnectionString;
+        url = new MongoUrl(ConnectionString);
+      }
+      else {
+        url = new MongoUrl(ConnectionString);
       }
 
-      var index = Contexts.FindIndex(x => x == Name);
+      var cn = ClientsConnections.FirstOrDefault(x => x.ConnectionString == ConnectionString);
+      if (cn == null) {
+        cn = new MongoClientConnection { ConnectionString = ConnectionString, Database = url.DatabaseName, Client = new MongoClient(ConnectionString) };
+        ClientsConnections.Add(cn);
+      }
 
       foreach (var prop in GetType().GetProperties()) {
         var t = prop.PropertyType;
         if (t.ToString().Contains("MongoCollectionSet")) {
-          var instance = Activator.CreateInstance(t, new object[] { Clients[index], Databases[index] });
+          var instance = Activator.CreateInstance(t, new object[] { cn.Client, cn.Database });
           prop.SetValue(this, instance);
         }
       }
