@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Context.Attributes;
 using MongoDB.Driver;
 using System;
 using System.Collections;
@@ -7,12 +8,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Mongo.Repository {
+namespace MongoDB.Context {
   public class MongoCollectionSet<T> : IEnumerable<T> {
     public IMongoCollection<T> Collection { get; private set; }
 
     public long TotalDocuments {
-      get { return Collection.Count(new BsonDocument()); }
+      get { return Collection.CountDocuments(FilterDefinition<T>.Empty); }
     }
 
     public MongoCollectionSet(MongoClient client, string Database) {
@@ -62,6 +63,7 @@ namespace Mongo.Repository {
     public IEnumerator<T> GetEnumerator() {
       return Collection.AsQueryable().ToList().GetEnumerator();
     }
+
     IEnumerator IEnumerable.GetEnumerator() {
       return GetEnumerator();
     }
