@@ -16,8 +16,8 @@ namespace MongoDB.Context {
       get { return Collection.CountDocuments(FilterDefinition<T>.Empty); }
     }
 
-    public MongoCollectionSet(MongoClient client, string Database) {
-      Collection = client.GetDatabase(Database).GetCollection<T>(GetCollectionName());
+    public MongoCollectionSet(IMongoDatabase database) {
+      Collection = database.GetCollection<T>(GetCollectionName());
     }
 
     public void Add(T obj) {
