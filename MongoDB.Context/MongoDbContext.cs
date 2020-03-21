@@ -12,14 +12,20 @@ namespace MongoDB.Context {
     public IMongoDatabase Database { get; private set; }
 
     public MongoDbContext(MongoDbContextOptions options) {
+      ConnectToClient(options);
       RegisterCollections();
+    }
+
+    private void ConnectToClient(MongoDbContextOptions options) {
+      Client = new MongoClient(options.ConnectionString);
+      Database = Client.GetDatabase(options.DatabaseName);
     }
 
     private void RegisterCollections() {
       foreach (var prop in GetType().GetProperties()) {
         var t = prop.PropertyType;
         if (t.ToString().Contains("MongoCollectionSet")) {
-          var instance = Activator.CreateInstance(t, new object[] { cn.Client, cn.Database });
+          var instance = Activator.CreateInstance(t, new object[] { Database });
           prop.SetValue(this, instance);
         }
       }
