@@ -1,9 +1,11 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 
-namespace MongoDB.Context.Interfaces {
+namespace MongoDB.Context.Interfaces
+{
 
-  public interface IMongoDbDocument {
+  public interface IMongoDbDocument
+  {
     [BsonElement("id"), BsonId]
     string ID { get; set; }
 

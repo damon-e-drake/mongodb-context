@@ -1,33 +1,52 @@
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
-namespace MongoDB.Context.Tests {
-  public class ContextTest {
+namespace MongoDB.Context.Tests
+{
+  public class ContextTest
+  {
 
-    private SampleContext _context;
+    private readonly SampleContext _context;
 
-    public ContextTest() {
+    public ContextTest()
+    {
       _context = new SampleContext(new MongoDbContextOptions(connectionString: "mongodb://10.0.47.79:3306", databaseName: "ContextTest"));
     }
 
-    [Fact(DisplayName = "Should have a UserDocument collection.")]
-    public void CollectionNotNull() {
-      var collection = _context.UserDocuments;
+    [Fact(DisplayName = "Should have instanced collections.")]
+    public void CollectionNotNull()
+    {
+      var users = _context.UserDocuments;
+      var blogs = _context.BlogDocuments;
 
-      Assert.NotNull(collection);
+      Assert.NotNull(users);
+      Assert.NotNull(blogs);
     }
 
-    [Fact(DisplayName = "Should have 0 User Documents.")]
-    public void CountUserDocuments() {
+    [Fact(DisplayName = "Should retieve collection names")]
+    public void CollectionNaming()
+    {
+      var users = _context.UserDocuments;
+      var blogs = _context.BlogDocuments;
+
+      Assert.Equal("Users", users.CollectionName);
+      Assert.Equal("BlogDocument", blogs.CollectionName);
+    }
+
+    [Fact(Skip = "Integration test", DisplayName = "Should have 0 User Documents.")]
+    public void CountUserDocuments()
+    {
       var count = _context.UserDocuments.TotalDocuments;
 
       Assert.Equal(0, count);
     }
 
-    [Fact(DisplayName = "Should add 2 User Documents.")]
-    public void CanAdd() {
-      _context.UserDocuments.Add(new UserDocument { ID = Guid.NewGuid().ToString(), ModifiedAt = DateTime.UtcNow });
-      _context.UserDocuments.Add(new UserDocument {ID = Guid.NewGuid().ToString(), ModifiedAt = DateTime.UtcNow.AddDays(-1) });
+    [Fact(Skip = "Integration Test", DisplayName = "Should add 2 User Documents.")]
+    public async Task CanAdd()
+    {
+      _ = await _context.UserDocuments.AddAsync(new UserDocument { ID = Guid.NewGuid().ToString(), ModifiedAt = DateTime.UtcNow });
+      _ = await _context.UserDocuments.AddAsync(new UserDocument { ID = Guid.NewGuid().ToString(), ModifiedAt = DateTime.UtcNow.AddDays(-1) });
 
       var count = _context.UserDocuments.TotalDocuments;
       Assert.Equal(2, count);

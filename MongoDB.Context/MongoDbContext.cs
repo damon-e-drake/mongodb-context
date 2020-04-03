@@ -1,7 +1,5 @@
-﻿using MongoDB.Context.Attributes;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System;
-using System.Linq;
 
 namespace MongoDB.Context
 {

@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Context.Attributes;
+﻿using MongoDB.Context.Attributes;
 using MongoDB.Context.Interfaces;
 using MongoDB.Driver;
 using System;
@@ -9,40 +8,58 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace MongoDB.Context {
-  public class MongoCollectionSet<T> : IMongoCollectionSet<T> where T : class
+namespace MongoDB.Context
+{
+  public class MongoCollectionSet<T> : IMongoCollectionSet<T> where T : IMongoDbDocument
   {
     public IMongoCollection<T> Collection { get; private set; }
+    public string CollectionName { get; private set; }
 
-    public long TotalDocuments
-    {
-      get { return Collection.CountDocuments(FilterDefinition<T>.Empty); }
-    }
+    public long TotalDocuments => Collection.CountDocuments(FilterDefinition<T>.Empty);
 
     public MongoCollectionSet(IMongoDatabase database)
     {
-      Collection = database.GetCollection<T>(GetCollectionName());
+      CollectionName = GetCollectionName();
+      Collection = database.GetCollection<T>(CollectionName);
     }
 
-    public void Add(T obj)
+    private string GetCollectionName()
     {
-      Collection.InsertOne(obj);
+      var attr = typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() as CollectionNameAttribute;
+      if (attr != null) { return attr.Name; }
+
+      return typeof(T).Name;
     }
 
-    public void Update(string ID, T obj)
+    public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
-      Collection.ReplaceOne(new BsonDocument("_id", new BsonObjectId(new ObjectId(ID))), obj);
+      await Collection.InsertOneAsync(item, opts);
+      return await FindAsync(item.ID);
     }
 
-    public void Remove(string ID)
+    public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
     {
-      Collection.DeleteOne(new BsonDocument("_id", new BsonObjectId(new ObjectId(ID))));
+      var results = await Collection.ReplaceOneAsync(x => x.ID == id, item, opts);
+      if (results.IsAcknowledged && results.MatchedCount == 1)
+      {
+        return item;
+      }
+      else
+      {
+        return default;
+      }
     }
 
-    public T Find(string ID)
+    public async Task<bool> RemoveAsync(string id)
     {
-      var id = new BsonObjectId(new ObjectId(ID));
-      return Collection.Find(new BsonDocument("_id", id)).FirstOrDefault();
+      var results = await Collection.DeleteOneAsync(x => x.ID == id);
+      return (results.IsAcknowledged && results.DeletedCount == 1);
+    }
+
+    public async Task<T> FindAsync(string id)
+    {
+      var results = await Collection.FindAsync(x => x.ID == id);
+      return await results.FirstOrDefaultAsync();
     }
 
     public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
@@ -55,22 +72,15 @@ namespace MongoDB.Context {
       return Collection.AsQueryable().Select(expr);
     }
 
-    public T FirstOrDefault(Expression<Func<T, bool>> expr)
+    public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
     {
-      return Collection.AsQueryable().FirstOrDefault(expr);
+      var results = await Collection.FindAsync(expr);
+      return await results.FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<T>> ToListAsync()
     {
       return await Collection.AsQueryable().ToListAsync();
-    }
-
-    private string GetCollectionName()
-    {
-      var attr = typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() as CollectionNameAttribute;
-      if (attr != null) { return attr.Name; }
-
-      return typeof(T).Name.ToLower();
     }
 
     public IEnumerator<T> GetEnumerator()
