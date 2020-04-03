@@ -3,46 +3,69 @@ using MongoDB.Driver;
 using System;
 using System.Linq;
 
-namespace MongoDB.Context {
+namespace MongoDB.Context
+{
 
-  public class MongoDbContext : IDisposable {
+  public class MongoDbContext : IDisposable
+  {
     private bool disposed = false;
 
     public IMongoClient Client { get; private set; }
     public IMongoDatabase Database { get; private set; }
 
-    public MongoDbContext(MongoDbContextOptions options) {
+    public MongoDbContext(MongoDbContextOptions options)
+    {
       ConnectToClient(options);
       RegisterCollections();
     }
 
-    private void ConnectToClient(MongoDbContextOptions options) {
+    private void ConnectToClient(MongoDbContextOptions options)
+    {
       Client = new MongoClient(options.ConnectionString);
       Database = Client.GetDatabase(options.DatabaseName);
     }
 
-    private void RegisterCollections() {
-      foreach (var prop in GetType().GetProperties()) {
+    private void RegisterCollections()
+    {
+      foreach (var prop in GetType().GetProperties())
+      {
         var t = prop.PropertyType;
-        if (t.ToString().Contains("MongoCollectionSet")) {
+        if (t.ToString().Contains("MongoCollectionSet"))
+        {
           var instance = Activator.CreateInstance(t, new object[] { Database });
           prop.SetValue(this, instance);
         }
       }
     }
 
-    private string GetCollectionName<T>() {
-      var attr = typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() as CollectionNameAttribute;
-      if (attr != null) { return attr.Name; }
+    protected virtual void Dispose(bool disposing)
+    {
+      if (!disposed)
+      {
+        if (disposing)
+        {
+          Database = null;
+          Client = null;
+        }
 
-      return typeof(T).Name.ToLower();
-    }
+        foreach (var prop in GetType().GetProperties())
+        {
+          prop.SetValue(this, null);
+        }
 
-    public void Dispose() {
-      foreach (var prop in GetType().GetProperties()) {
-        prop.SetValue(this, null);
+        disposed = true;
       }
     }
-  }
 
+    ~MongoDbContext()
+    {
+      Dispose(false);
+    }
+
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+  }
 }
