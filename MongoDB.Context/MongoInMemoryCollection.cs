@@ -87,7 +87,7 @@ namespace MongoDB.Context
 
     public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
     {
-      throw new NotImplementedException();
+     return Task.Run(() => _collection.AsQueryable().FirstOrDefault(expr));
     }
 
     public IEnumerable<T> Select(Expression<Func<T, T>> expr)
@@ -97,7 +97,7 @@ namespace MongoDB.Context
 
     public Task<IEnumerable<T>> ToListAsync()
     {
-      throw new NotImplementedException();
+      return Task.Run(() => _collection.AsEnumerable<T>());
     }
 
     public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
