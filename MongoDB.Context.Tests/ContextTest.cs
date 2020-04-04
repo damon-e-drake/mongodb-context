@@ -32,7 +32,7 @@ namespace MongoDB.Context.Tests
       Assert.NotNull(blogs);
     }
 
-    [Fact( DisplayName = "Should retieve collection names")]
+    [Fact(DisplayName = "Should retieve collection names")]
     public void CollectionNaming()
     {
       var users = _context.UserDocuments;
