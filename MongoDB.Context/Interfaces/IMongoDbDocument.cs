@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace MongoDB.Context.Interfaces
 {
