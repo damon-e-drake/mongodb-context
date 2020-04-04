@@ -12,6 +12,7 @@ namespace MongoDB.Context.Tests
     public ContextTest()
     {
       _context = new SampleContext(new MongoDbContextOptions(connectionString: "mongodb://10.0.47.79:3306", databaseName: "ContextTest"));
+      _context.Database.DropCollection("Users");
     }
 
     [Fact(DisplayName = "Should have instanced collections.")]
@@ -34,7 +35,7 @@ namespace MongoDB.Context.Tests
       Assert.Equal("BlogDocument", blogs.CollectionName);
     }
 
-    [Fact(Skip = "Integration test", DisplayName = "Should have 0 User Documents.")]
+    [Fact(DisplayName = "Should have 0 User Documents.")]
     public void CountUserDocuments()
     {
       var count = _context.UserDocuments.TotalDocuments;
@@ -42,11 +43,12 @@ namespace MongoDB.Context.Tests
       Assert.Equal(0, count);
     }
 
-    [Fact(Skip = "Integration Test", DisplayName = "Should add 2 User Documents.")]
+    [Fact(DisplayName = "Should add 2 User Documents.")]
     public async Task CanAdd()
     {
-      _ = await _context.UserDocuments.AddAsync(new UserDocument { ID = Guid.NewGuid().ToString(), ModifiedAt = DateTime.UtcNow });
-      _ = await _context.UserDocuments.AddAsync(new UserDocument { ID = Guid.NewGuid().ToString(), ModifiedAt = DateTime.UtcNow.AddDays(-1) });
+      _ = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow });
+      _ = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow.AddDays(-1) });
+      _ = await _context.BlogDocuments.AddAsync(new BlogDocument { CreatedAt = DateTime.UtcNow, ModifiedAt = DateTime.UtcNow });
 
       var count = _context.UserDocuments.TotalDocuments;
       Assert.Equal(2, count);
