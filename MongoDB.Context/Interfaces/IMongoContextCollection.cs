@@ -13,9 +13,9 @@ namespace MongoDB.Context.Interfaces
     long TotalDocuments { get; }
 
     Task<T> AddAsync(T item, InsertOneOptions opts = null);
-    Task<T> FindAsync(string ID);
-    Task<bool> RemoveAsync(string ID);
-    Task<T> UpdateAsync(string ID, T item, ReplaceOptions opts = null);
+    Task<T> FindAsync(string id);
+    Task<bool> RemoveAsync(string id);
+    Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null);
 
     Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr);
 

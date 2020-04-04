@@ -14,17 +14,17 @@ namespace MongoDB.Context
 {
   public class MongoInMemoryCollection<T> : IMongoContextCollection<T> where T : IMongoDbDocument
   {
-    private readonly ConcurrentBag<T> MemoryCollection;
+    private readonly ConcurrentBag<T> _collection;
 
     public string CollectionName { get; private set; }
 
     public IMongoCollection<T> Collection { get; private set; }
 
-    public long TotalDocuments => MemoryCollection.Count;
+    public long TotalDocuments => _collection.Count;
 
     public MongoInMemoryCollection(IMongoDatabase database = null)
     {
-      MemoryCollection = new ConcurrentBag<T>();
+      _collection = new ConcurrentBag<T>();
       CollectionName = GetCollectionName();
     }
 
@@ -35,12 +35,12 @@ namespace MongoDB.Context
       return typeof(T).Name;
     }
 
-    public Task<T> AddAsync(T item, InsertOneOptions opts = null)
+    public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
-      item.ID = ObjectId.GenerateNewId().ToString();
+      item.ID = string.IsNullOrEmpty(item.ID) ? ObjectId.GenerateNewId().ToString() : item.ID;
       try
       {
-        MemoryCollection.Add(item);
+        _collection.Add(item);
         return Task.FromResult(item);
       }
       catch
@@ -50,9 +50,9 @@ namespace MongoDB.Context
 
     }
 
-    public Task<T> FindAsync(string ID)
+    public Task<T> FindAsync(string id)
     {
-      throw new NotImplementedException();
+     return Task.FromResult(_collection.FirstOrDefault(x => x.ID == id));
     }
 
     public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
@@ -65,9 +65,17 @@ namespace MongoDB.Context
       throw new NotImplementedException();
     }
 
-    public Task<bool> RemoveAsync(string ID)
+    public async Task<bool> RemoveAsync(string id)
     {
-      throw new NotImplementedException();
+      return await Task.Run(() =>
+      {
+        var item = _collection.FirstOrDefault(x => x.ID == id);
+        if (item == null) { return false; }
+
+        if (_collection.TryTake(out item)) { return true; }
+
+        return false;
+      }).ConfigureAwait(false);    
     }
 
     public IEnumerable<T> Select(Expression<Func<T, T>> expr)
@@ -80,9 +88,16 @@ namespace MongoDB.Context
       throw new NotImplementedException();
     }
 
-    public Task<T> UpdateAsync(string ID, T item, ReplaceOptions opts = null)
+    public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
     {
-      throw new NotImplementedException();
+      return await Task.Run(async () =>
+      {
+        var removed = await RemoveAsync(id).ConfigureAwait(false);
+
+        if (removed) { AddAsync(item); }
+
+        return default(T);
+      }).ConfigureAwait(false);
     }
 
     public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
