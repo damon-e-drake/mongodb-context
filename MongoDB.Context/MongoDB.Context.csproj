@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>3.1.0-rc.4</Version>
+    <Version>3.1.0</Version>
     <Authors>Damon E. Drake</Authors>
     <Company />
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>Cleaned up property instancing for collections on the MongoDbContext</PackageReleaseNotes>
+    <PackageReleaseNotes>Memory Collections available</PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/damon-e-drake/mongodb-context.git</RepositoryUrl>
     <Copyright>Damon E. Drake © 2020 - 2021</Copyright>

@@ -6,13 +6,11 @@ namespace MongoDB.Context.Tests
 {
   public class ContextTest
   {
-
     private readonly SampleContext _context;
 
     public ContextTest()
     {
       _context = new SampleContext(new MongoDbContextOptions(connectionString: "in-memory", databaseName: "ContextTest"));
-      // _context.Database.DropCollection("Users");
     }
 
     [Fact(DisplayName = "In Memory should have null Client and Database")]
@@ -42,23 +40,51 @@ namespace MongoDB.Context.Tests
       Assert.Equal("BlogDocument", blogs.CollectionName);
     }
 
-    [Fact(DisplayName = "Should have 0 User Documents.")]
+    [Fact(DisplayName = "Should have 30 User Documents.")]
     public void CountUserDocuments()
     {
       var count = _context.UserDocuments.TotalDocuments;
 
-      Assert.Equal(0, count);
+      Assert.Equal(30, count);
     }
 
-    [Fact(DisplayName = "Should add 2 User Documents.")]
+    [Fact(DisplayName = "Should add 2 User Documents, 1 Blog Document.")]
     public async Task CanAdd()
     {
       _ = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow });
       _ = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow.AddDays(-1) });
       _ = await _context.BlogDocuments.AddAsync(new BlogDocument { CreatedAt = DateTime.UtcNow, ModifiedAt = DateTime.UtcNow });
 
-      var count = _context.UserDocuments.TotalDocuments;
-      Assert.Equal(2, count);
+      var ucount = _context.UserDocuments.TotalDocuments;
+      var bcount = _context.BlogDocuments.TotalDocuments;
+
+      Assert.Equal(32, ucount);
+      Assert.Equal(1, bcount);
+    }
+
+    [Theory(DisplayName = "Can Find Items")]
+    [InlineData("5e88c948fc13ae3945000033", true)]
+    [InlineData("5e88c948fc13ae394500004f", true)]
+    [InlineData("7f22c948fc13ae394500004f", false)]
+    public async Task CanFind(string id, bool expected)
+    {
+      var item = await _context.UserDocuments.FindAsync(id);
+      var found = item != null;
+
+      Assert.Equal(expected, found);
+    }
+
+    [Theory(DisplayName = "Can Delete Items")]
+    [InlineData("5e88c948fc13ae3945000033", true)]
+    [InlineData("5e88c948fc13ae394500004f", true)]
+    public async Task CanDelete(string id, bool expected)
+    {
+      var deleted = await _context.UserDocuments.RemoveAsync(id);
+
+      var ucount = _context.UserDocuments.TotalDocuments;
+
+      Assert.Equal(29, ucount);
+      Assert.Equal(expected, deleted);
     }
 
   }
