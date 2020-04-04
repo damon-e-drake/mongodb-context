@@ -19,7 +19,6 @@ namespace MongoDB.Context.Tests
     public DateTime ModifiedAt { get; set; }
   }
 
-  [CollectionName("Blog Documents")]
   public class BlogDocument : IMongoDbDocument
   {
     [BsonId]

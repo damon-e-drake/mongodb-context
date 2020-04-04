@@ -35,7 +35,7 @@ namespace MongoDB.Context.Tests
       Assert.Equal("BlogDocument", blogs.CollectionName);
     }
 
-    [Fact(DisplayName = "Should have 0 User Documents.")]
+    [Fact(Skip = "Integration Test", DisplayName = "Should have 0 User Documents.")]
     public void CountUserDocuments()
     {
       var count = _context.UserDocuments.TotalDocuments;
@@ -43,7 +43,7 @@ namespace MongoDB.Context.Tests
       Assert.Equal(0, count);
     }
 
-    [Fact(DisplayName = "Should add 2 User Documents.")]
+    [Fact(Skip = "Integration Test", DisplayName = "Should add 2 User Documents.")]
     public async Task CanAdd()
     {
       _ = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow });

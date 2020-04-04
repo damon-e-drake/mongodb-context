@@ -29,7 +29,7 @@ namespace MongoDB.Context
       foreach (var prop in GetType().GetProperties())
       {
         var t = prop.PropertyType;
-        if (t.ToString().Contains("MongoCollectionSet", StringComparison.InvariantCulture))
+        if (t.ToString().Contains("MongoCollection", StringComparison.InvariantCulture))
         {
           var instance = Activator.CreateInstance(t, new object[] { Database });
           prop.SetValue(this, instance);
