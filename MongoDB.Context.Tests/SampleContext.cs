@@ -34,9 +34,9 @@ namespace MongoDB.Context.Tests
   public class SampleContext : MongoDbContext
   {
 
-    public MongoCollection<UserDocument> UserDocuments { get; set; }
+    public IMongoContextCollection<UserDocument> UserDocuments { get; set; }
 
-    public MongoCollection<BlogDocument> BlogDocuments { get; set; }
+    public IMongoContextCollection<BlogDocument> BlogDocuments { get; set; }
 
     public SampleContext(MongoDbContextOptions options) : base(options)
     {

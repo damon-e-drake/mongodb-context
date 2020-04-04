@@ -15,23 +15,30 @@ namespace MongoDB.Context
     {
       if (options == null) { throw new ArgumentNullException(nameof(options)); }
       ConnectToClient(options);
-      RegisterCollections();
+      RegisterCollections(options);
     }
 
     private void ConnectToClient(MongoDbContextOptions options)
     {
-      Client = new MongoClient(options.ConnectionString);
-      Database = Client.GetDatabase(options.DatabaseName);
+      if (options.ConnectionString.ToUpperInvariant() != "IN-MEMORY")
+      {
+        Client = new MongoClient(options.ConnectionString);
+        Database = Client.GetDatabase(options.DatabaseName);
+      }
     }
 
-    private void RegisterCollections()
+    private void RegisterCollections(MongoDbContextOptions options)
     {
       foreach (var prop in GetType().GetProperties())
       {
         var t = prop.PropertyType;
-        if (t.ToString().Contains("MongoCollection", StringComparison.InvariantCulture))
+        if (t.IsInterface && t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IMongoContextCollection<>))
         {
-          var instance = Activator.CreateInstance(t, new object[] { Database });
+          var generic = t.GetGenericArguments();
+          var classType = options.ConnectionString.ToUpperInvariant() == "IN-MEMORY" ? typeof(MongoInMemoryCollection<>) : typeof(MongoCollection<>);
+          var constructed = classType.MakeGenericType(generic);
+          var instance = Activator.CreateInstance(constructed, new object[] { Database });
+
           prop.SetValue(this, instance);
         }
       }

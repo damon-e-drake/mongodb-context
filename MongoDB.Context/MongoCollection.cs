@@ -25,8 +25,7 @@ namespace MongoDB.Context
 
     private string GetCollectionName()
     {
-      var attr = typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() as CollectionNameAttribute;
-      if (attr != null) { return attr.Name; }
+      if (typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() is CollectionNameAttribute attr) { return attr.Name; }
 
       return typeof(T).Name;
     }

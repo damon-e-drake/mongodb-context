@@ -11,11 +11,18 @@ namespace MongoDB.Context.Tests
 
     public ContextTest()
     {
-     // _context = new SampleContext(new MongoDbContextOptions(connectionString: "mongodb://10.0.47.79:3306", databaseName: "ContextTest"));
-     // _context.Database.DropCollection("Users");
+      _context = new SampleContext(new MongoDbContextOptions(connectionString: "in-memory", databaseName: "ContextTest"));
+      // _context.Database.DropCollection("Users");
     }
 
-    [Fact(Skip = "Requires integration setup", DisplayName = "Should have instanced collections.")]
+    [Fact(DisplayName = "In Memory should have null Client and Database")]
+    public void ContextInMemory()
+    {
+      Assert.Null(_context.Database);
+      Assert.Null(_context.Client);
+    }
+
+    [Fact(DisplayName = "Should have instanced collections.")]
     public void CollectionNotNull()
     {
       var users = _context.UserDocuments;
@@ -25,7 +32,7 @@ namespace MongoDB.Context.Tests
       Assert.NotNull(blogs);
     }
 
-    [Fact(Skip = "Require integration setup", DisplayName = "Should retieve collection names")]
+    [Fact( DisplayName = "Should retieve collection names")]
     public void CollectionNaming()
     {
       var users = _context.UserDocuments;
@@ -35,7 +42,7 @@ namespace MongoDB.Context.Tests
       Assert.Equal("BlogDocument", blogs.CollectionName);
     }
 
-    [Fact(Skip = "Integration Test", DisplayName = "Should have 0 User Documents.")]
+    [Fact(DisplayName = "Should have 0 User Documents.")]
     public void CountUserDocuments()
     {
       var count = _context.UserDocuments.TotalDocuments;
@@ -43,7 +50,7 @@ namespace MongoDB.Context.Tests
       Assert.Equal(0, count);
     }
 
-    [Fact(Skip = "Integration Test", DisplayName = "Should add 2 User Documents.")]
+    [Fact(DisplayName = "Should add 2 User Documents.")]
     public async Task CanAdd()
     {
       _ = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow });
