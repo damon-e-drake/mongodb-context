@@ -61,17 +61,7 @@ namespace MongoDB.Context
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "KeyNotFound means item does not exist in this context.")]
     public Task<T> FindAsync(string id)
     {
-      return Task.Run(() =>
-      {
-        try
-        {
-         return _collection[id];
-        }
-        catch (KeyNotFoundException)
-        {
-          return default;
-        }
-      });
+     return Task.FromResult(_collection.FirstOrDefault(x => x.ID == id));
     }
 
     public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
@@ -118,9 +108,16 @@ namespace MongoDB.Context
       return Task.Run(() => _collection.Values.AsEnumerable());
     }
 
-    public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
+    public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
     {
-      throw new NotImplementedException();
+      return await Task.Run(async () =>
+      {
+        var removed = await RemoveAsync(id).ConfigureAwait(false);
+
+        if (removed) { AddAsync(item); }
+
+        return default(T);
+      }).ConfigureAwait(false);
     }
 
     public IEnumerator<T> GetEnumerator()
