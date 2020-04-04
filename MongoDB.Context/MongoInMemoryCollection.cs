@@ -37,17 +37,19 @@ namespace MongoDB.Context
 
     public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
-      item.ID = string.IsNullOrEmpty(item.ID) ? ObjectId.GenerateNewId().ToString() : item.ID;
-      try
+     return await Task.Run(() =>
       {
-        _collection.Add(item);
-        return Task.FromResult(item);
-      }
-      catch
-      {
-        throw;
-      }
-
+        item.ID = string.IsNullOrEmpty(item.ID) ? ObjectId.GenerateNewId().ToString() : item.ID;
+        try
+        {
+          _collection.Add(item);
+          return item;
+        }
+        catch
+        {
+          throw;
+        }
+      }).ConfigureAwait(false);
     }
 
     public Task<T> FindAsync(string id)
