@@ -1,11 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>3.1.0-rc.1</Version>
-    <Authors>Damon E. Drake</Authors>
-    <Company />
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>MongoDB.Context.Sample</AssemblyName>
+    <RootNamespace>MongoDB.Context.Sample</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +12,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MongoDB.Driver" Version="2.10.2" />
   </ItemGroup>
 
 </Project>

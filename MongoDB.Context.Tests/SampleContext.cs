@@ -29,13 +29,13 @@ namespace MongoDB.Context.Tests
   public class SampleContext : MongoDbContext
   {
 
-    public MongoCollectionSet<UserDocument> UserDocuments { get; set; }
+    public MongoCollection<UserDocument> UserDocuments { get; set; }
 
-    public MongoCollectionSet<BlogDocument> BlogDocuments { get; set; }
+    public MongoCollection<BlogDocument> BlogDocuments { get; set; }
 
     public SampleContext(MongoDbContextOptions options) : base(options)
     {
-      
+
     }
   }
 }
