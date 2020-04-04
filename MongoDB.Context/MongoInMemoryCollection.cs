@@ -57,14 +57,19 @@ namespace MongoDB.Context
       return Task.FromResult(_collection.FirstOrDefault(x => x.ID == id));
     }
 
-    public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
+    public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
     {
-      throw new NotImplementedException();
-    }
+      return await Task.Run(async () =>
+      {
+        var removed = await RemoveAsync(id).ConfigureAwait(false);
 
-    public IEnumerator<T> GetEnumerator()
-    {
-      throw new NotImplementedException();
+        if (removed) { 
+          await AddAsync(item).ConfigureAwait(false);
+          return item;
+        }
+
+        return default;
+      }).ConfigureAwait(false);
     }
 
     public async Task<bool> RemoveAsync(string id)
@@ -80,6 +85,11 @@ namespace MongoDB.Context
       }).ConfigureAwait(false);
     }
 
+    public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
+    {
+      throw new NotImplementedException();
+    }
+
     public IEnumerable<T> Select(Expression<Func<T, T>> expr)
     {
       throw new NotImplementedException();
@@ -90,19 +100,12 @@ namespace MongoDB.Context
       throw new NotImplementedException();
     }
 
-    public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
+    public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
     {
-      return await Task.Run(async () =>
-      {
-        var removed = await RemoveAsync(id).ConfigureAwait(false);
-
-        if (removed) { await AddAsync(item).ConfigureAwait(false); }
-
-        return default(T);
-      }).ConfigureAwait(false);
+      throw new NotImplementedException();
     }
 
-    public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
+    public IEnumerator<T> GetEnumerator()
     {
       throw new NotImplementedException();
     }
