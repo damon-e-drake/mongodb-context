@@ -108,7 +108,7 @@ namespace MongoDB.Context
       return Task.Run(() => _collection.Values.AsEnumerable());
     }
 
-    public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
+    public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
     {
       return await Task.Run(async () =>
       {
