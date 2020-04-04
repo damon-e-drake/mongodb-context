@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Context.Attributes;
 using MongoDB.Context.Interfaces;
 using System;
@@ -9,16 +10,21 @@ namespace MongoDB.Context.Tests
   [CollectionName("Users")]
   public class UserDocument : IMongoDbDocument
   {
-    [BsonElement("id"), BsonId]
+    [BsonId]
+    [BsonElement("_id")]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string ID { get; set; }
 
     [BsonElement("modifiedAt")]
     public DateTime ModifiedAt { get; set; }
   }
 
+  [CollectionName("Blog Documents")]
   public class BlogDocument : IMongoDbDocument
   {
-    [BsonElement("id"), BsonId]
+    [BsonId]
+    [BsonElement("_id")]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string ID { get; set; }
     [BsonElement("createdAt")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -28,10 +34,9 @@ namespace MongoDB.Context.Tests
 
   public class SampleContext : MongoDbContext
   {
+    public MongoCollectionSet<UserDocument> UserDocuments { get; set; }
 
-    public MongoCollection<UserDocument> UserDocuments { get; set; }
-
-    public MongoCollection<BlogDocument> BlogDocuments { get; set; }
+    public MongoCollectionSet<BlogDocument> BlogDocuments { get; set; }
 
     public SampleContext(MongoDbContextOptions options) : base(options)
     {
