@@ -30,6 +30,11 @@ namespace MongoDB.Context
       return typeof(T).Name;
     }
 
+    public void SeedData(IEnumerable<T> data)
+    {
+      // Does nothing in an actual MongoContext;
+    }
+
     public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
       await Collection.InsertOneAsync(item, opts).ConfigureAwait(false);

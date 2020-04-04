@@ -14,7 +14,7 @@ namespace MongoDB.Context
 {
   public class MongoInMemoryCollection<T> : IMongoContextCollection<T> where T : IMongoDbDocument
   {
-    private readonly ConcurrentBag<T> _collection;
+    private ConcurrentDictionary<string, T> _collection;
 
     public string CollectionName { get; private set; }
 
@@ -24,7 +24,7 @@ namespace MongoDB.Context
 
     public MongoInMemoryCollection()
     {
-      _collection = new ConcurrentBag<T>();
+      _collection = new ConcurrentDictionary<string, T>();
       CollectionName = GetCollectionName();
     }
 
@@ -35,6 +35,12 @@ namespace MongoDB.Context
       return typeof(T).Name;
     }
 
+    public void SeedData(IEnumerable<T> data)
+    {
+      if (data == null) { throw new ArgumentNullException(nameof(data)); }
+      foreach (var item in data) { _collection.TryAdd(item.ID, item); }
+    }
+
     public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
       return await Task.Run(() =>
@@ -42,7 +48,7 @@ namespace MongoDB.Context
          item.ID = string.IsNullOrEmpty(item.ID) ? ObjectId.GenerateNewId().ToString() : item.ID;
          try
          {
-           _collection.Add(item);
+           _collection.TryAdd(item.ID, item);
            return item;
          }
          catch
@@ -52,9 +58,20 @@ namespace MongoDB.Context
        }).ConfigureAwait(false);
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "KeyNotFound means item does not exist in this context.")]
     public Task<T> FindAsync(string id)
     {
-      return Task.FromResult(_collection.FirstOrDefault(x => x.ID == id));
+      return Task.Run(() =>
+      {
+        try
+        {
+         return _collection[id];
+        }
+        catch (KeyNotFoundException)
+        {
+          return default;
+        }
+      });
     }
 
     public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
@@ -63,7 +80,8 @@ namespace MongoDB.Context
       {
         var removed = await RemoveAsync(id).ConfigureAwait(false);
 
-        if (removed) { 
+        if (removed)
+        {
           await AddAsync(item).ConfigureAwait(false);
           return item;
         }
@@ -76,10 +94,10 @@ namespace MongoDB.Context
     {
       return await Task.Run(() =>
       {
-        var item = _collection.FirstOrDefault(x => x.ID == id);
+        var item = _collection[id];
         if (item == null) { return false; }
 
-        if (_collection.TryTake(out item)) { return true; }
+        if (_collection.TryRemove(id, out item)) { return true; }
 
         return false;
       }).ConfigureAwait(false);
@@ -87,7 +105,7 @@ namespace MongoDB.Context
 
     public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
     {
-     return Task.Run(() => _collection.AsQueryable().FirstOrDefault(expr));
+      throw new NotImplementedException();
     }
 
     public IEnumerable<T> Select(Expression<Func<T, T>> expr)
@@ -97,7 +115,7 @@ namespace MongoDB.Context
 
     public Task<IEnumerable<T>> ToListAsync()
     {
-      return Task.Run(() => _collection.AsEnumerable<T>());
+      return Task.Run(() => _collection.Values.AsEnumerable());
     }
 
     public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
