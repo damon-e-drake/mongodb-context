@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MongoDB.Driver;
+using System;
 using MongoDB.Driver;
 
 namespace MongoDB.Context
 {
-
-  public class MongoDbContext : IDisposable
+  public class MongoDbContext : IMongoDBContext
   {
     private bool disposed = false;
 
