@@ -12,6 +12,8 @@ namespace MongoDB.Context.Interfaces
     IMongoCollection<T> Collection { get; }
     long TotalDocuments { get; }
 
+    void SeedData(IEnumerable<T> data);
+
     Task<T> AddAsync(T item, InsertOneOptions opts = null);
     Task<T> FindAsync(string id);
     Task<bool> RemoveAsync(string id);
