@@ -22,7 +22,7 @@ namespace MongoDB.Context
 
     public long TotalDocuments => _collection.Count;
 
-    public MongoInMemoryCollection(IMongoDatabase database = null)
+    public MongoInMemoryCollection()
     {
       _collection = new ConcurrentBag<T>();
       CollectionName = GetCollectionName();
@@ -37,24 +37,24 @@ namespace MongoDB.Context
 
     public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
-     return await Task.Run(() =>
-      {
-        item.ID = string.IsNullOrEmpty(item.ID) ? ObjectId.GenerateNewId().ToString() : item.ID;
-        try
-        {
-          _collection.Add(item);
-          return item;
-        }
-        catch
-        {
-          throw;
-        }
-      }).ConfigureAwait(false);
+      return await Task.Run(() =>
+       {
+         item.ID = string.IsNullOrEmpty(item.ID) ? ObjectId.GenerateNewId().ToString() : item.ID;
+         try
+         {
+           _collection.Add(item);
+           return item;
+         }
+         catch
+         {
+           throw;
+         }
+       }).ConfigureAwait(false);
     }
 
     public Task<T> FindAsync(string id)
     {
-     return Task.FromResult(_collection.FirstOrDefault(x => x.ID == id));
+      return Task.FromResult(_collection.FirstOrDefault(x => x.ID == id));
     }
 
     public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
@@ -77,7 +77,7 @@ namespace MongoDB.Context
         if (_collection.TryTake(out item)) { return true; }
 
         return false;
-      }).ConfigureAwait(false);    
+      }).ConfigureAwait(false);
     }
 
     public IEnumerable<T> Select(Expression<Func<T, T>> expr)
@@ -96,7 +96,7 @@ namespace MongoDB.Context
       {
         var removed = await RemoveAsync(id).ConfigureAwait(false);
 
-        if (removed) { AddAsync(item); }
+        if (removed) { await AddAsync(item).ConfigureAwait(false); }
 
         return default(T);
       }).ConfigureAwait(false);
