@@ -8,6 +8,6 @@ under a single context. This is a very small wrapper designed for simple CRUD op
 MongoDB Context is designed to use standard dependency injection calls for netcore applications.
 
 
-```csharp
-
+```
+PM> Install-Package MongoDB.Context -v3.1.0-rc.2
 ```
