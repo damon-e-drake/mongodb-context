@@ -1,5 +1,5 @@
-﻿using MongoDB.Driver;
-using System;
+﻿using System;
+using MongoDB.Driver;
 
 namespace MongoDB.Context
 {
@@ -13,6 +13,7 @@ namespace MongoDB.Context
 
     public MongoDbContext(MongoDbContextOptions options)
     {
+      if (options == null) { throw new ArgumentNullException(nameof(options)); }
       ConnectToClient(options);
       RegisterCollections();
     }
@@ -28,7 +29,7 @@ namespace MongoDB.Context
       foreach (var prop in GetType().GetProperties())
       {
         var t = prop.PropertyType;
-        if (t.ToString().Contains("MongoCollectionSet"))
+        if (t.ToString().Contains("MongoCollectionSet", StringComparison.InvariantCulture))
         {
           var instance = Activator.CreateInstance(t, new object[] { Database });
           prop.SetValue(this, instance);
