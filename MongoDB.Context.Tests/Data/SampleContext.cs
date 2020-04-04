@@ -1,4 +1,6 @@
-﻿using MongoDB.Context.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Context.Attributes;
 using MongoDB.Context.Interfaces;
 using Newtonsoft.Json;
 using System;
@@ -16,6 +18,18 @@ namespace MongoDB.Context.Tests.Data
 			var json = sr.ReadToEnd();
 			return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
 		}
+  }
+
+  public static class MockDataLoader
+  {
+    public static IEnumerable<T> LoadData<T>(string fileName)
+    {
+      using (var sr = new StreamReader($"mock-data/{fileName}"))
+      {
+        var json = sr.ReadToEnd();
+        return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
+      }
+    }
   }
 
   [CollectionName("Users")]
