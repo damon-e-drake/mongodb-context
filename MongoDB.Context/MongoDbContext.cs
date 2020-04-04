@@ -34,10 +34,12 @@ namespace MongoDB.Context
         var t = prop.PropertyType;
         if (t.IsInterface && t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IMongoContextCollection<>))
         {
+          var isMemory = options.ConnectionString.ToUpperInvariant() == "IN-MEMORY";
+
           var generic = t.GetGenericArguments();
-          var classType = options.ConnectionString.ToUpperInvariant() == "IN-MEMORY" ? typeof(MongoInMemoryCollection<>) : typeof(MongoCollection<>);
+          var classType = isMemory ? typeof(MongoInMemoryCollection<>) : typeof(MongoCollection<>);
           var constructed = classType.MakeGenericType(generic);
-          var instance = Activator.CreateInstance(constructed, new object[] { Database });
+          var instance = isMemory ? Activator.CreateInstance(constructed) : Activator.CreateInstance(constructed, new object[] { Database });
 
           prop.SetValue(this, instance);
         }
