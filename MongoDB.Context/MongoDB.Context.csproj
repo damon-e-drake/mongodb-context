@@ -2,11 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>3.1.0-rc.2</Version>
+    <Version>3.1.0-rc.3</Version>
     <Authors>Damon E. Drake</Authors>
     <Company />
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>Fixed code analyzer warnings and errors.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updating dependency files.</PackageReleaseNotes>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/damon-e-drake/mongodb-context.git</RepositoryUrl>
+    <Copyright>Damon E. Drake © 2020 - 2021</Copyright>
+    <Description>A simple wrapper for organizing collections in a single context. Supports a very light weight set of CRUD operations for using mongo. Wrapper does expose the client, collections, and database to use more complex operations.</Description>
   </PropertyGroup>
 
   <ItemGroup>
