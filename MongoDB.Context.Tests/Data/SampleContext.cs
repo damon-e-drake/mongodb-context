@@ -20,7 +20,7 @@ namespace MongoDB.Context.Tests.Data
 		}
   }
 
-  public static class MockDataLoader
+	public static class MockDataLoader
   {
     public static IEnumerable<T> LoadData<T>(string fileName)
     {
