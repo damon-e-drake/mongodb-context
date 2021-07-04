@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Context.Attributes;
+﻿using MongoDB.Context.Attributes;
 using MongoDB.Context.Interfaces;
 using Newtonsoft.Json;
 using System;
@@ -10,7 +8,7 @@ using System.IO;
 namespace MongoDB.Context.Tests
 {
 
-  public static class MockDataLoader
+	public static class MockDataLoader
   {
     public static IEnumerable<T> LoadData<T>(string fileName)
     {

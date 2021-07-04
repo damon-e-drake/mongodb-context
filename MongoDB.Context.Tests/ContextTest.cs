@@ -4,7 +4,7 @@ using Xunit;
 
 namespace MongoDB.Context.Tests
 {
-  public class ContextTest
+	public class ContextTest
   {
     private readonly SampleContext _context;
 
