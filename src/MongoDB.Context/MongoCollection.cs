@@ -23,6 +23,7 @@ namespace MongoDB.Context
       Collection = database?.GetCollection<T>(CollectionName);
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This is used for wired-up collections when an instance is created by the Activator.")]
     private string GetCollectionName()
     {
       if (typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() is CollectionNameAttribute attr) { return attr.Name; }

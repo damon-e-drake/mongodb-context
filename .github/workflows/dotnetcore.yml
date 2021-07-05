@@ -19,13 +19,13 @@ jobs:
         dotnet-version: 5.0.301
 
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore src/MongoDB.Context.sln
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build src/MongoDB.Context.sln --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test src/MongoDB.Context.sln --no-restore --verbosity normal
 
     - name: Publish NuGet
       uses: rohith/publish-nuget@v2.2.1
