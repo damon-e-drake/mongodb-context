@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>5.0.0-beta-1</Version>
+    <Version>5.0.0</Version>
     <Authors>Damon E. Drake</Authors>
     <Company />
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>* Updates to net5.0 framework
-* Added dependency injection for an inherited MongoDbContext</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      * Updates to net5.0 framework
+      * Added dependency injection for an inherited MongoDbContext
+    </PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/damon-e-drake/mongodb-context.git</RepositoryUrl>
     <Copyright>Damon E. Drake © 2020 - 2022</Copyright>
