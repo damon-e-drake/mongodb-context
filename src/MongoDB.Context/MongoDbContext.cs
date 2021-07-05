@@ -13,7 +13,9 @@ namespace MongoDB.Context
 
     public MongoDbContext(MongoDbContextOptions options)
     {
-      if (options == null) { throw new ArgumentNullException(nameof(options)); }
+      if (options == null) 
+        throw new ArgumentNullException(nameof(options));
+
       ConnectToClient(options);
       RegisterCollections(options);
     }
