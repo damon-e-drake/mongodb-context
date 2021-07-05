@@ -6,7 +6,7 @@ namespace MongoDB.Context
 {
   public class MongoDbContext : IMongoDBContext
   {
-    private bool disposed = false;
+    private bool disposed;
 
     public IMongoClient Client { get; private set; }
     public IMongoDatabase Database { get; private set; }
@@ -20,6 +20,9 @@ namespace MongoDB.Context
 
     private void ConnectToClient(MongoDbContextOptions options)
     {
+      if (string.IsNullOrWhiteSpace(options.ConnectionString))
+        throw new ArgumentException("Missing a connection string", nameof(options));
+
       if (options.ConnectionString.ToUpperInvariant() != "IN-MEMORY")
       {
         Client = new MongoClient(options.ConnectionString);

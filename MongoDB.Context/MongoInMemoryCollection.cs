@@ -14,7 +14,7 @@ namespace MongoDB.Context
 {
   public class MongoInMemoryCollection<T> : IMongoContextCollection<T> where T : IMongoDbDocument
   {
-    private ConcurrentDictionary<string, T> _collection;
+    private readonly ConcurrentDictionary<string, T> _collection;
 
     public string CollectionName { get; private set; }
 

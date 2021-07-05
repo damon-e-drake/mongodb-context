@@ -5,19 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MongoDB.Context.Tests
+namespace MongoDB.Context.Tests.Data
 {
 
 	public static class MockDataLoader
   {
     public static IEnumerable<T> LoadData<T>(string fileName)
     {
-      using (var sr = new StreamReader($"mock-data/{fileName}"))
-      {
-        var json = sr.ReadToEnd();
-        return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
-      }
-    }
+			using var sr = new StreamReader($"mock-data/{fileName}");
+			var json = sr.ReadToEnd();
+			return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
+		}
   }
 
   [CollectionName("Users")]
