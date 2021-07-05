@@ -20,18 +20,6 @@ namespace MongoDB.Context.Tests.Data
 		}
   }
 
-	public static class MockDataLoader
-  {
-    public static IEnumerable<T> LoadData<T>(string fileName)
-    {
-      using (var sr = new StreamReader($"mock-data/{fileName}"))
-      {
-        var json = sr.ReadToEnd();
-        return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
-      }
-    }
-  }
-
   [CollectionName("Users")]
   public class UserDocument : IMongoDbDocument
   {
