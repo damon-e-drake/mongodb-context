@@ -30,6 +30,6 @@ jobs:
     - name: Publish NuGet
       uses: rohith/publish-nuget@v2.2.1
       with:
-        PROJECT_FILE_PATH: MongoDB.Context/MongoDB.Context.csproj
+        PROJECT_FILE_PATH: src/MongoDB.Context/MongoDB.Context.csproj
         TAG_COMMIT: true
         NUGET_KEY: ${{secrets.NUGET_KEY}}

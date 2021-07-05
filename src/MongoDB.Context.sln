@@ -5,14 +5,14 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoDB.Context", "MongoDB.Context\MongoDB.Context.csproj", "{5C27F863-53C6-419C-B91F-FCC78214955D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoDB.Context.Tests", "MongoDB.Context.Tests\MongoDB.Context.Tests.csproj", "{74F1A4D9-2EDC-4324-91FA-1F44E70C8844}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoDB.Context.Tests", "..\tests\MongoDB.Context.Tests\MongoDB.Context.Tests.csproj", "{74F1A4D9-2EDC-4324-91FA-1F44E70C8844}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{99EFB41B-F2B7-4A5E-8F2C-A7D432F06EA3}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Context.Sample.Console", "MongoDB.Context.Sample.Console\MongoDB.Context.Sample.Console.csproj", "{F73E0AAA-2DEF-4924-9BB6-C503C43EA3C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Context.Sample.Console", "..\samples\MongoDB.Context.Sample.Console\MongoDB.Context.Sample.Console.csproj", "{F73E0AAA-2DEF-4924-9BB6-C503C43EA3C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
