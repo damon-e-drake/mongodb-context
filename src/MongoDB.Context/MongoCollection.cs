@@ -44,7 +44,8 @@ namespace MongoDB.Context
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This is used for wired-up collections when an instance is created by the Activator.")]
     private string GetCollectionName()
     {
-      if (typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() is CollectionNameAttribute attr) { return attr.Name; }
+      if (typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() is CollectionNameAttribute attr) 
+        return attr.Name;
 
       return typeof(T).Name;
     }
@@ -80,14 +81,7 @@ namespace MongoDB.Context
     public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
     {
       var results = await Collection.ReplaceOneAsync(x => x.ID == id, item, opts).ConfigureAwait(false);
-      if (results.IsAcknowledged && results.MatchedCount == 1)
-      {
-        return item;
-      }
-      else
-      {
-        return default;
-      }
+      return (results.IsAcknowledged && results.MatchedCount == 1) ? item : default;
     }
 
     /// <summary>

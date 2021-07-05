@@ -30,15 +30,19 @@ namespace MongoDB.Context
 
     private string GetCollectionName()
     {
-      if (typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() is CollectionNameAttribute attr) { return attr.Name; }
+      if (typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() is CollectionNameAttribute attr)
+        return attr.Name;
 
       return typeof(T).Name;
     }
 
     public void SeedData(IEnumerable<T> data)
     {
-      if (data == null) { throw new ArgumentNullException(nameof(data)); }
-      foreach (var item in data) { _collection.TryAdd(item.ID, item); }
+      if (data == null)
+        throw new ArgumentNullException(nameof(data));
+
+      foreach (var item in data)
+        _collection.TryAdd(item.ID, item);
     }
 
     public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
@@ -95,42 +99,35 @@ namespace MongoDB.Context
       return await Task.Run(() =>
       {
         var item = _collection[id];
-        if (item == null) { return false; }
+        if (item == null)
+          return false;
 
-        if (_collection.TryRemove(id, out item)) { return true; }
+        if (_collection.TryRemove(id, out item))
+          return true;
 
         return false;
       }).ConfigureAwait(false);
     }
 
-    public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
+    public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr)
     {
-      throw new NotImplementedException();
+      return await Task.Run(() =>
+      {
+        var items = _collection.Values.AsEnumerable();
+        return items.FirstOrDefault(expr.Compile());
+      }).ConfigureAwait(false);
     }
 
-    public IEnumerable<T> Select(Expression<Func<T, T>> expr)
-    {
-      throw new NotImplementedException();
-    }
-
-    public Task<IEnumerable<T>> ToListAsync()
-    {
-      return Task.Run(() => _collection.Values.AsEnumerable());
-    }
+    public Task<IEnumerable<T>> ToListAsync() => Task.Run(() => _collection.Values.AsEnumerable());
 
     public IEnumerable<T> Where(Expression<Func<T, bool>> expr)
     {
-      throw new NotImplementedException();
+      var items = _collection.Values.AsEnumerable();
+      return items.Where(expr.Compile());
     }
 
-    public IEnumerator<T> GetEnumerator()
-    {
-      throw new NotImplementedException();
-    }
+    public IEnumerator<T> GetEnumerator() => _collection.Values.AsEnumerable().GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      throw new NotImplementedException();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   }
 }
