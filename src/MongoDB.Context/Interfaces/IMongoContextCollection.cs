@@ -21,11 +21,8 @@ namespace MongoDB.Context.Interfaces
 
     Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expr);
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1716:Identifiers should not match keywords", Justification = "Accurately represents the function being used.")]
-    IEnumerable<T> Select(Expression<Func<T, T>> expr);
     IEnumerable<T> Where(Expression<Func<T, bool>> expr);
     Task<IEnumerable<T>> ToListAsync();
-
 
     new IEnumerator<T> GetEnumerator();
   }
