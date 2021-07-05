@@ -2,15 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>3.1.0</Version>
+    <Version>5.0.0-beta01</Version>
     <Authors>Damon E. Drake</Authors>
     <Company />
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>Memory Collections available</PackageReleaseNotes>
+    <PackageReleaseNotes>* Updates to net5.0 framework
+* Added dependency injection for an inherited MongoDbContext</PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/damon-e-drake/mongodb-context.git</RepositoryUrl>
-    <Copyright>Damon E. Drake © 2020 - 2021</Copyright>
-    <Description>A simple wrapper for organizing collections in a single context. Supports a very light weight set of CRUD operations for using mongo. Wrapper does expose the client, collections, and database to use more complex operations.</Description>
+    <Copyright>Damon E. Drake © 2020 - 2022</Copyright>
+    <Description>A simple wrapper for organizing collections in a single context. Supports a very light weight set of CRUD operations for using MongoDB. Wrapper exposes the client, collections, and database to use more complex operations.</Description>
+    <PackageTags>mongodb dotnet</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
