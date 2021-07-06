@@ -1,8 +1,6 @@
-name: .NET Core
+name: Master Build / Package Deploy
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
