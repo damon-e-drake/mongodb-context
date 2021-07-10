@@ -66,7 +66,7 @@ namespace MongoDB.Context.Sample
 
     }
 
-    public void OnModelConfiguring(ModelBuilder builder)
+    public override void OnModelConfiguring(ModelBuilder builder)
     {
       builder.Collection<UserDocument>(m =>
       {

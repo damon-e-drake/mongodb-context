@@ -43,7 +43,7 @@ namespace MongoDB.Context.Tests.Data
 
 		public SampleContext(MongoDbContextOptions options) : base(options) => SeedCollections();
 
-		public void OnModelConfiguring(ModelBuilder builder)
+		public override void OnModelConfiguring(ModelBuilder builder)
 		{
       builder.Collection<UserDocument>(m =>
       {
