@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using MongoDB.Bson;
-using MongoDB.Context.Attributes;
 using MongoDB.Context.Interfaces;
 using MongoDB.Driver;
 
@@ -22,18 +21,10 @@ namespace MongoDB.Context
 
     public long TotalDocuments => _collection.Count;
 
-    public MongoInMemoryCollection()
+    public MongoInMemoryCollection(string collectionName)
     {
       _collection = new ConcurrentDictionary<string, T>();
-      CollectionName = GetCollectionName();
-    }
-
-    private string GetCollectionName()
-    {
-      if (typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() is CollectionNameAttribute attr)
-        return attr.Name;
-
-      return typeof(T).Name;
+      CollectionName = collectionName;
     }
 
     public void SeedData(IEnumerable<T> data)
@@ -42,17 +33,17 @@ namespace MongoDB.Context
         throw new ArgumentNullException(nameof(data));
 
       foreach (var item in data)
-        _collection.TryAdd(item.ID, item);
+        _collection.TryAdd(item.Id, item);
     }
 
     public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
       return await Task.Run(() =>
       {
-        item.ID = string.IsNullOrEmpty(item.ID) ? ObjectId.GenerateNewId().ToString() : item.ID;
+        item.Id = string.IsNullOrEmpty(item.Id) ? ObjectId.GenerateNewId().ToString() : item.Id;
         try
         {
-          _collection.TryAdd(item.ID, item);
+          _collection.TryAdd(item.Id, item);
           return item;
         }
         catch

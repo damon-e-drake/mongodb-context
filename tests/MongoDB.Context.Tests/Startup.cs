@@ -13,10 +13,11 @@ namespace MongoDB.Context.Tests
 		{
 			SetConfiguration();
 
-			services.AddMongoContext<SampleContext>(new MongoDbContextOptions(
-				connectionString: Configuration.GetValue<string>("MongoOptions:ConnectionString"),
-				databaseName: Configuration.GetValue<string>("MongoOptions:Database")
-			));
+			services.AddMongoContext<SampleContext>(opts =>
+			{
+				opts.ConnectionString = Configuration.GetValue<string>("MongoOptions:ConnectionString");
+				opts.DatabaseName = Configuration.GetValue<string>("MongoOptions:Database");
+			});
 		}
 
 		private void SetConfiguration()

@@ -1,18 +1,36 @@
+using MongoDB.Bson.Serialization;
 using MongoDB.Context.Tests.Data;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.DependencyInjection;
 
 namespace MongoDB.Context.Tests
 {
 	public class ContextTest
   {
     private readonly SampleContext _context;
+		private readonly ITestOutputHelperAccessor _logger;
 
-    public ContextTest(SampleContext context)
+		public ContextTest(SampleContext context, ITestOutputHelperAccessor logger)
     {
       _context = context;
+			_logger = logger;
     }
+
+		[Fact(DisplayName = "Should map FirstName to firstName in UserDocument")]
+		public void ShouldMapClasses()
+		{
+			var map = BsonClassMap.LookupClassMap(typeof(UserDocument));
+			var element = map.AllMemberMaps.Count(x => x.ElementName == "firstName");
+			var name = map.AllMemberMaps.Count(x => x.MemberName == "FirstName");
+
+			_logger.Output.WriteLine(string.Join(",", map.AllMemberMaps.Select(x => x.ElementName)));
+
+			Assert.Equal(1, element);
+			Assert.Equal(1, name);
+		}
 
     [Fact(DisplayName = "In Memory should have null Client and Database")]
     public void ContextInMemory()
@@ -38,7 +56,7 @@ namespace MongoDB.Context.Tests
 			var blogs = _context.BlogDocuments;
 
 			Assert.Equal("Users", users.CollectionName);
-			Assert.Equal("BlogDocument", blogs.CollectionName);
+			Assert.Equal("Blogs", blogs.CollectionName);
 		}
 
 		[Fact(DisplayName = "Should have 30 User Documents.")]
@@ -52,13 +70,14 @@ namespace MongoDB.Context.Tests
 		[Fact(DisplayName = "Should add 2 User Documents, 1 Blog Document.")]
 		public async Task CanAdd()
 		{
-			_ = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow });
+			var user = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow });
 			_ = await _context.UserDocuments.AddAsync(new UserDocument { ModifiedAt = DateTime.UtcNow.AddDays(-1) });
 			_ = await _context.BlogDocuments.AddAsync(new BlogDocument { CreatedAt = DateTime.UtcNow, ModifiedAt = DateTime.UtcNow });
 
 			var ucount = _context.UserDocuments.TotalDocuments;
 			var bcount = _context.BlogDocuments.TotalDocuments;
 
+			Assert.NotNull(user.Id);
 			Assert.Equal(30, ucount);
 			Assert.Equal(1, bcount);
 		}
