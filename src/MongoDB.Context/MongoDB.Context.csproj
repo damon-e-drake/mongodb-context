@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>5.0.0</Version>
+    <Version>5.0.1</Version>
     <Authors>Damon E. Drake</Authors>
     <Company />
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReleaseNotes>
-      * Updates to net5.0 framework
-      * Added dependency injection for an inherited MongoDbContext
+      * Added basic fluent mapping for Collection Name, Id, and Properties
+      * Updated sample project and tests
+      * Has many breaking changes from 5.0.0
     </PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/damon-e-drake/mongodb-context.git</RepositoryUrl>
