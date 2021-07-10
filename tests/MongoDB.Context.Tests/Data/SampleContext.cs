@@ -1,5 +1,5 @@
-﻿using MongoDB.Context.Attributes;
-using MongoDB.Context.Interfaces;
+﻿using MongoDB.Context.Interfaces;
+using MongoDB.Context.Mapping;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,16 +18,18 @@ namespace MongoDB.Context.Tests.Data
 		}
   }
 
-  [CollectionName("Users")]
   public class UserDocument : IMongoDbDocument
   {
-    public string ID { get; set; }
+    public string Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
     public DateTime ModifiedAt { get; set; }
   }
 
   public class BlogDocument : IMongoDbDocument
   {
-    public string ID { get; set; }
+    public string Id { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime ModifiedAt { get; set; }
   }
@@ -43,6 +45,27 @@ namespace MongoDB.Context.Tests.Data
     {
       SeedCollections();
     }
+
+    public void OnModelConfiguring(ModelBuilder builder)
+		{
+      builder.Collection<UserDocument>(m =>
+      {
+        m.ToCollectionName("Users");
+        m.HasObjectId(k => k.Id);
+        m.Property(x => x.FirstName, name: "firstName", isRequired: true);
+        m.Property(x => x.LastName, name: "lastName", isRequired: true);
+        m.Property(x => x.Email, name: "email", isRequired: true);
+        m.Property(x => x.ModifiedAt, name: "modifiedAt");
+      });
+
+      builder.Collection<BlogDocument>(m =>
+      {
+        m.ToCollectionName("Blogs");
+        m.HasObjectId(k => k.Id);
+        m.Property(p => p.CreatedAt, name: "createdAt");
+      });
+      
+		}
 
     private void SeedCollections()
     {

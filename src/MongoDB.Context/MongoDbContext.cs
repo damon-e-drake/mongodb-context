@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using MongoDB.Context.Interfaces;
+using MongoDB.Context.Mapping;
 using MongoDB.Driver;
 
 namespace MongoDB.Context
@@ -7,15 +9,17 @@ namespace MongoDB.Context
   public class MongoDbContext : IMongoDBContext
   {
     private bool disposed;
+    protected ModelBuilder Builder { get; private set; } = new ModelBuilder();
 
     public IMongoClient Client { get; private set; }
     public IMongoDatabase Database { get; private set; }
 
     public MongoDbContext(MongoDbContextOptions options)
     {
-      if (options == null) 
+      if (options == null)
         throw new ArgumentNullException(nameof(options));
 
+      ConfigureClassMaps();
       ConnectToClient(options);
       RegisterCollections(options);
     }
@@ -41,14 +45,31 @@ namespace MongoDB.Context
         {
           var isMemory = options.ConnectionString.ToUpperInvariant() == "IN-MEMORY";
 
-          var generic = t.GetGenericArguments();
+          var generic = t.GetGenericArguments()[0];
           var classType = isMemory ? typeof(MongoInMemoryCollection<>) : typeof(MongoCollection<>);
           var constructed = classType.MakeGenericType(generic);
-          var instance = isMemory ? Activator.CreateInstance(constructed) : Activator.CreateInstance(constructed, new object[] { Database });
+          var collectionName = GetCollectionName(generic.Name);
+          var instance = isMemory ? Activator.CreateInstance(constructed, new object[] { collectionName }) : Activator.CreateInstance(constructed, new object[] { Database, collectionName });
 
           prop.SetValue(this, instance);
         }
       }
+    }
+
+    private void ConfigureClassMaps()
+    {
+      var methods = GetType().GetMethods();
+      var configure = methods.FirstOrDefault(x => x.Name == "OnModelConfiguring" && x.IsPublic);
+      if (configure != null)
+        configure.Invoke(this, new object[] { Builder });
+    }
+
+    private string GetCollectionName(string name)
+    {
+      if (Builder.CollectionRegistry.ContainsKey(name))
+        return Builder.CollectionRegistry[name];
+
+      return null;
     }
 
     protected virtual void Dispose(bool disposing)

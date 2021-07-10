@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using MongoDB.Context.Attributes;
 using MongoDB.Context.Interfaces;
 using MongoDB.Driver;
 
@@ -35,19 +34,10 @@ namespace MongoDB.Context
     /// Creates an instance of a collection retrieved from a mongo database.
     /// </summary>
     /// <param name="database">Reference to the database containing the collection.</param>
-    public MongoCollection(IMongoDatabase database)
+    public MongoCollection(IMongoDatabase database, string collectionName)
     {
-      CollectionName = GetCollectionName();
+      CollectionName = collectionName;
       Collection = database?.GetCollection<T>(CollectionName);
-    }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "This is used for wired-up collections when an instance is created by the Activator.")]
-    private string GetCollectionName()
-    {
-      if (typeof(T).GetCustomAttributes(typeof(CollectionNameAttribute), true).FirstOrDefault() is CollectionNameAttribute attr) 
-        return attr.Name;
-
-      return typeof(T).Name;
     }
 
     /// <summary>
@@ -68,7 +58,7 @@ namespace MongoDB.Context
     public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
       await Collection.InsertOneAsync(item, opts).ConfigureAwait(false);
-      return await FindAsync(item.ID).ConfigureAwait(false);
+      return await FindAsync(item.Id).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -80,7 +70,7 @@ namespace MongoDB.Context
     /// <returns>The updated document in the collection.</returns>
     public async Task<T> UpdateAsync(string id, T item, ReplaceOptions opts = null)
     {
-      var results = await Collection.ReplaceOneAsync(x => x.ID == id, item, opts).ConfigureAwait(false);
+      var results = await Collection.ReplaceOneAsync(x => x.Id == id, item, opts).ConfigureAwait(false);
       return (results.IsAcknowledged && results.MatchedCount == 1) ? item : default;
     }
 
@@ -91,7 +81,7 @@ namespace MongoDB.Context
     /// <returns>True or false depending on the deletion status.</returns>
     public async Task<bool> RemoveAsync(string id)
     {
-      var results = await Collection.DeleteOneAsync(x => x.ID == id).ConfigureAwait(false);
+      var results = await Collection.DeleteOneAsync(x => x.Id == id).ConfigureAwait(false);
       return (results.IsAcknowledged && results.DeletedCount == 1);
     }
 
@@ -102,7 +92,7 @@ namespace MongoDB.Context
     /// <returns>The document or null if not found in the current collection.</returns>
     public async Task<T> FindAsync(string id)
     {
-      var results = await Collection.FindAsync(x => x.ID == id).ConfigureAwait(false);
+      var results = await Collection.FindAsync(x => x.Id == id).ConfigureAwait(false);
       return await results.FirstOrDefaultAsync().ConfigureAwait(false);
     }
 
