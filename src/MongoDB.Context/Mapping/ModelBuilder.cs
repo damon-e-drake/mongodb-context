@@ -5,7 +5,7 @@ using MongoDB.Context.Interfaces;
 
 namespace MongoDB.Context.Mapping
 {
-  public class ModelBuilder
+	public class ModelBuilder
   {
     public Dictionary<string, string> CollectionRegistry { get; set; } = new Dictionary<string, string>();
 
@@ -16,9 +16,11 @@ namespace MongoDB.Context.Mapping
 
       var collection = mapper.Registry.FirstOrDefault(x => x.Type == "CollectionName");
       if (collection != null)
-        CollectionRegistry.Add(typeof(T).Name, collection.Name);
+			{
+				CollectionRegistry.Add(typeof(T).Name, collection.Name);
+			}
 
-      mapper.CompileModel();
+			mapper.CompileModel();
     }
   }
 }

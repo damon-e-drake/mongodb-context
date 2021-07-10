@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MongoDB.Context
 {
-  public static class Startup
+	public static class Startup
   {
 
     public static IServiceCollection AddMongoContext<T>(this IServiceCollection services, Action<MongoDbContextOptions> options) where T : MongoDbContext

@@ -1,6 +1,6 @@
 ﻿namespace MongoDB.Context
 {
-  public class MongoDbContextOptions
+	public class MongoDbContextOptions
   {
     public string ConnectionString { get; set; }
     public string DatabaseName { get; set; }

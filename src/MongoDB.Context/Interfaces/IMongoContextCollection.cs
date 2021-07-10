@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace MongoDB.Context.Interfaces
 {
-  public interface IMongoContextCollection<T> : IEnumerable<T>
+	public interface IMongoContextCollection<T> : IEnumerable<T>
   {
     string CollectionName { get; }
     IMongoCollection<T> Collection { get; }
