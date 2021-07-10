@@ -1,8 +1,8 @@
-using MongoDB.Bson.Serialization;
-using MongoDB.Context.Tests.Data;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson.Serialization;
+using MongoDB.Context.Tests.Data;
 using Xunit;
 using Xunit.DependencyInjection;
 
