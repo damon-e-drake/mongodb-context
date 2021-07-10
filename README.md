@@ -7,7 +7,7 @@ underlying client, database, and collection for more advanced usage.
 Install the [Nuget](https://www.nuget.org/packages/MongoDB.Context) package.
 
 ```
-PM> Install-Package MongoDB.Context -Version 5.0.0-beta-1
+PM> Install-Package MongoDB.Context -Version 5.0.1
 ```
 ## Creating the Models
 
@@ -15,16 +15,10 @@ Models should inherit from ```IMongoDbContext``` and can optionally use attribut
 Property names can be mapped using the ```[BsonElement]``` attribute. 
 
 ```csharp
-[CollectionName("Users")]
 public class UserDocument : IMongoDbDocument {
   public string ID {get; set;}
-
-  [BsonElement("firstName")]
   public string FirstName {get; set;}
-
-  [BsonElement("email")]
   public string Email {get; set;}
-
   public DateTime ModifiedAt {get; set;}
 }
 ```
@@ -42,6 +36,18 @@ public class SampleContext : MongoDbContext
   public SampleContext(MongoDbContextOptions options) : base(options)
   {
   }
+
+  public void OnModelConfiguring(ModelBuilder builder)
+  {
+    builder.Collection<UserDocument>(m =>
+      {
+        m.ToCollectionName("Users");
+        m.HasObjectId(k => k.Id);
+        m.Property(x => x.FirstName, name: "firstName", isRequired: true);
+        m.Property(x => x.Email, name: "email", isRequired: true);
+        m.Property(x => x.ModifiedAt, name: "modifiedAt");
+      });
+  }
 }
 ```
 
@@ -54,10 +60,11 @@ public class Startup
 
   public void ConfigureServices(IServiceCollection services)
   {
-    services.AddMongoContext<SampleContext>(new MongoDbContextOptions(
-      connectionString: Configuration.GetValue<string>("MongoOptions:ConnectionString"),
-      databaseName: Configuration.GetValue<string>("MongoOptions:Database")
-    ));
+    services.AddMongoContext<SampleContext>(opts =>
+    {
+      opts.ConnectionString = Configuration.GetValue<string>("MongoOptions:ConnectionString");
+      opts.DatabaseName = Configuration.GetValue<string>("MongoOptions:Database");
+    }));
   }
 }
 ```
@@ -69,7 +76,7 @@ public class SomeUserService
 {
   private readonly SampleContext _context;
 
-  public SomeClass(SampleContext context)
+  public SomeUserSampleContext context)
   {
     _context = context;
   }
