@@ -17,19 +17,28 @@ namespace MongoDB.Context
     public MongoDbContext(MongoDbContextOptions options)
     {
       if (options == null)
-        throw new ArgumentNullException(nameof(options));
+			{
+				throw new ArgumentNullException(nameof(options));
+			}
 
-      ConfigureClassMaps();
+			ConfigureClassMaps();
       ConnectToClient(options);
       RegisterCollections(options);
     }
 
+		public virtual void OnModelConfiguring(ModelBuilder builder)
+		{
+
+		}
+
     private void ConnectToClient(MongoDbContextOptions options)
     {
       if (string.IsNullOrWhiteSpace(options.ConnectionString))
-        throw new ArgumentException("Missing a connection string", nameof(options));
+			{
+				throw new ArgumentException("Missing a connection string", nameof(options));
+			}
 
-      if (options.ConnectionString.ToUpperInvariant() != "IN-MEMORY")
+			if (options.ConnectionString.ToUpperInvariant() != "IN-MEMORY")
       {
         Client = new MongoClient(options.ConnectionString);
         Database = Client.GetDatabase(options.DatabaseName);
@@ -61,15 +70,19 @@ namespace MongoDB.Context
       var methods = GetType().GetMethods();
       var configure = methods.FirstOrDefault(x => x.Name == "OnModelConfiguring" && x.IsPublic);
       if (configure != null)
-        configure.Invoke(this, new object[] { Builder });
-    }
+			{
+				configure.Invoke(this, new object[] { Builder });
+			}
+		}
 
     private string GetCollectionName(string name)
     {
       if (Builder.CollectionRegistry.ContainsKey(name))
-        return Builder.CollectionRegistry[name];
+			{
+				return Builder.CollectionRegistry[name];
+			}
 
-      return null;
+			return null;
     }
 
     protected virtual void Dispose(bool disposing)

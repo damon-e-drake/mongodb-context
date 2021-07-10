@@ -16,9 +16,11 @@ namespace MongoDB.Context.Mapping
 
       var collection = mapper.Registry.FirstOrDefault(x => x.Type == "CollectionName");
       if (collection != null)
-        CollectionRegistry.Add(typeof(T).Name, collection.Name);
+			{
+				CollectionRegistry.Add(typeof(T).Name, collection.Name);
+			}
 
-      mapper.CompileModel();
+			mapper.CompileModel();
     }
   }
 }

@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E536D743
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{9F9AC835-5A5E-41DE-BECD-07C4DC9E906C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoDB.Context.WebApi", "..\samples\MongoDB.Context.WebApi\MongoDB.Context.WebApi.csproj", "{4D2050F2-9CD8-412B-8284-0973223C9827}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{F73E0AAA-2DEF-4924-9BB6-C503C43EA3C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F73E0AAA-2DEF-4924-9BB6-C503C43EA3C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F73E0AAA-2DEF-4924-9BB6-C503C43EA3C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D2050F2-9CD8-412B-8284-0973223C9827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D2050F2-9CD8-412B-8284-0973223C9827}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D2050F2-9CD8-412B-8284-0973223C9827}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D2050F2-9CD8-412B-8284-0973223C9827}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{5C27F863-53C6-419C-B91F-FCC78214955D} = {F908BEFB-37DC-46BB-ADFF-3B3D4BE53C73}
 		{74F1A4D9-2EDC-4324-91FA-1F44E70C8844} = {E536D743-5E01-4FCB-B5A4-EA7A854555AD}
 		{F73E0AAA-2DEF-4924-9BB6-C503C43EA3C2} = {9F9AC835-5A5E-41DE-BECD-07C4DC9E906C}
+		{4D2050F2-9CD8-412B-8284-0973223C9827} = {9F9AC835-5A5E-41DE-BECD-07C4DC9E906C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77A4E943-9696-40BE-9C45-D87A773154D0}

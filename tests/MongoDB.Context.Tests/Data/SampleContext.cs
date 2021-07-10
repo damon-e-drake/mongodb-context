@@ -41,12 +41,9 @@ namespace MongoDB.Context.Tests.Data
 
     public IMongoContextCollection<BlogDocument> BlogDocuments { get; set; }
 
-    public SampleContext(MongoDbContextOptions options) : base(options)
-    {
-      SeedCollections();
-    }
+		public SampleContext(MongoDbContextOptions options) : base(options) => SeedCollections();
 
-    public void OnModelConfiguring(ModelBuilder builder)
+		public void OnModelConfiguring(ModelBuilder builder)
 		{
       builder.Collection<UserDocument>(m =>
       {
@@ -67,9 +64,6 @@ namespace MongoDB.Context.Tests.Data
       
 		}
 
-    private void SeedCollections()
-    {
-      UserDocuments.SeedData(MockDataLoader.LoadData<UserDocument>("mock-users.json"));
-    }
-  }
+		private void SeedCollections() => UserDocuments.SeedData(MockDataLoader.LoadData<UserDocument>("mock-users.json"));
+	}
 }

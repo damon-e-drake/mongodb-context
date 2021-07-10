@@ -40,22 +40,19 @@ namespace MongoDB.Context
       Collection = database?.GetCollection<T>(CollectionName);
     }
 
-    /// <summary>
-    /// Not used in a MongoCollection. This is used for the In-Memory collection.
-    /// </summary>
-    /// <param name="data">Collection of documents</param>
-    public void SeedData(IEnumerable<T> data)
-    {
-      throw new NotImplementedException();
-    }
+		/// <summary>
+		/// Not used in a MongoCollection. This is used for the In-Memory collection.
+		/// </summary>
+		/// <param name="data">Collection of documents</param>
+		public void SeedData(IEnumerable<T> data) => throw new NotImplementedException();
 
-    /// <summary>
-    /// Adds a document to the current collection.
-    /// </summary>
-    /// <param name="item">Model representing the document to add.</param>
-    /// <param name="opts">Options for inserting one document.</param>
-    /// <returns>The document added to the collection.</returns>
-    public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
+		/// <summary>
+		/// Adds a document to the current collection.
+		/// </summary>
+		/// <param name="item">Model representing the document to add.</param>
+		/// <param name="opts">Options for inserting one document.</param>
+		/// <returns>The document added to the collection.</returns>
+		public async Task<T> AddAsync(T item, InsertOneOptions opts = null)
     {
       await Collection.InsertOneAsync(item, opts).ConfigureAwait(false);
       return await FindAsync(item.Id).ConfigureAwait(false);
