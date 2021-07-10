@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Context.Interfaces;
 using MongoDB.Context.Mapping;
-using System;
-using System.Threading.Tasks;
 
 namespace MongoDB.Context.Sample
 {
-  public static class Program
+	public static class Program
   {
     public static Task Main(string[] args)
     {

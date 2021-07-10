@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace MongoDB.Context
 {
-  public class MongoDbContext : IMongoDBContext
+	public class MongoDbContext : IMongoDBContext
   {
     private bool disposed;
     protected ModelBuilder Builder { get; private set; } = new ModelBuilder();

@@ -9,11 +9,11 @@ using MongoDB.Driver;
 
 namespace MongoDB.Context
 {
-  /// <summary>
-  /// Represents a mongo collection and provides basic LINQ support to manage the collection.
-  /// </summary>
-  /// <typeparam name="T">Represents the IMongoDocument to be used as the collection document.</typeparam>
-  public class MongoCollection<T> : IMongoContextCollection<T> where T : IMongoDbDocument
+	/// <summary>
+	/// Represents a mongo collection and provides basic LINQ support to manage the collection.
+	/// </summary>
+	/// <typeparam name="T">Represents the IMongoDocument to be used as the collection document.</typeparam>
+	public class MongoCollection<T> : IMongoContextCollection<T> where T : IMongoDbDocument
   {
     /// <summary>
     /// Provides public access to the underlying Mongo Collection.

@@ -9,7 +9,7 @@ using MongoDB.Context.Interfaces;
 
 namespace MongoDB.Context.Mapping
 {
-  public class ModelMap<T> where T : IMongoDbDocument
+	public class ModelMap<T> where T : IMongoDbDocument
   {
     public List<ModelMapRegistry<T>> Registry { get; private set; } = new List<ModelMapRegistry<T>>();
 

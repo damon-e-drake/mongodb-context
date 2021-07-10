@@ -11,7 +11,7 @@ using MongoDB.Driver;
 
 namespace MongoDB.Context
 {
-  public class MongoInMemoryCollection<T> : IMongoContextCollection<T> where T : IMongoDbDocument
+	public class MongoInMemoryCollection<T> : IMongoContextCollection<T> where T : IMongoDbDocument
   {
     private readonly ConcurrentDictionary<string, T> _collection;
 

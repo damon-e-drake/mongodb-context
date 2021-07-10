@@ -5,7 +5,7 @@ using MongoDB.Context.Interfaces;
 
 namespace MongoDB.Context.Mapping
 {
-  public class ModelBuilder
+	public class ModelBuilder
   {
     public Dictionary<string, string> CollectionRegistry { get; set; } = new Dictionary<string, string>();
 
